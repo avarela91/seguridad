@@ -1,0 +1,60 @@
+﻿@model ET.User
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12 col-lg-10 col-lg-offset-1">
+        <div class="panel">
+            <div class="panel-heading">
+                <hgroup class="title title-list">
+                    <h2>Nuevo Usuario</h2>
+                </hgroup>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Name)
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "Nombre del Empleado" })
+                        @Html.ValidationMessageFor(m => m.Name)
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.UserName)
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "Usuario" })
+                        @Html.ValidationMessageFor(m => m.UserName)
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Password)
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Contraseña" })
+                        @Html.ValidationMessageFor(m => m.Password)
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Telefono)
+                        @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", @placeholder = "Telefono" })
+                        @Html.ValidationMessageFor(m => m.Telefono)
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Supervisor)
+                        @Html.TextBoxFor(m => m.Supervisor, new { @class = "form-control", @placeholder = "Contacto de Supervisor" })
+                        @Html.ValidationMessageFor(m => m.Supervisor)
+                    </div>
+                    <div class="col-md-3 col-md-offset-6">
+                        <br />
+                        @Html.ActionLink("Cancelar", "Index/", null, new { @class = "btn btn-danger form-control" })
+                    </div>
+                    <div class="col-md-3">
+                        <br />
+                        <input type="submit" value="Guardar" class="btn btn-success form-control" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

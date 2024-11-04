@@ -1,0 +1,142 @@
+﻿@model List<ET.Modulo>
+
+@using seguridad.Filters
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (TempData["Message"] != null)
+{
+    <script type="text/javascript">
+                    window.onload = function () {
+                        Swal.fire({
+                          position: 'top-end',
+                          icon: 'success',
+                          title: '@TempData["Message"]',
+                          showConfirmButton: false,
+                          timer: 1500
+                        })
+                    };
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-12 col-lg-10 col-lg-offset-1">
+        <div class="panel">
+            <div class="panel-heading">
+                <hgroup class="title title-list">
+                    <h2>Módulos</h2>
+                    @if (FilterAuth.Authorize_User("005"))
+                    {
+                        @Html.ActionLink("Nuevo", "Create", "Roles", new { @class = "btn btn-info" })
+                    }
+                </hgroup>
+            </div>
+            <div class="panel-body">
+
+                <table id="myTable" class="table table-responsive">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.First().Codigo)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.First().Nombre)
+                        </th>
+                        <th></th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Codigo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Nombre)
+                            </td>
+                            <td>
+
+                                @if (FilterAuth.Authorize_User("006"))
+                                {
+                                    @Html.ActionLink("Editar", "Edit", new { id = item.Modulo_Id })
+                                }
+                                @if (FilterAuth.Authorize_User("006"))
+                                {
+                                    <span>|</span>
+                                    @*@Html.ActionLink("", "", new {@onclick = string.FormatshowAlert(@item.Modulo_Id)" })*@
+                                    <a onclick="showAlert(@item.Modulo_Id)">Eliminar</a>
+                               }
+                                @if (FilterAuth.Authorize_User("002"))
+                                {
+                                    <span>|</span>
+                                    @Html.ActionLink("Permisos", "Index", new { controller = "Permiso", id = item.Modulo_Id })
+                                }
+                                @if (FilterAuth.Authorize_User("003"))
+                                {
+                                    <span>|</span>
+                                    @Html.ActionLink("Roles", "Index", new { controller = "Roles", id = item.Modulo_Id })
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                "language": {
+                    "url": "/Scripts/DataTables/lang/spanish.txt"
+                }
+            });
+
+            //$(document).on('click', ".eliminar", function () {
+            //    if (!confirm('¿Esta seguro que desea borrar este dato?')) {
+            //        return false;
+            //    }
+            //});
+        });
+
+        function showAlert(id) {
+            swal.fire({
+                title: "Seguro que quiere eliminar el registro?",
+                text: "Una vez aceptado este mensaje, no se puede revertir la operación!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, Eliminarlo!',
+                cancelButtonText: 'Cancelar'
+            })
+                .then((result) => {
+                    if (result.value) {
+
+                        $.ajax({
+                            type: "POST",
+                            data: { 'id': id },
+                            url: '@Url.Action("Delete","Modulo")',
+                            success: function (data) {
+                                swal.fire("Eliminado!", "El registro ha sido eliminado correctamente", "success")
+                                .then((Ok) => {
+                                     window.location= '@Url.Action("Index","Modulo")';
+                                    })
+                            },
+                            error: function (data) {
+                                swal.fire("ERROR!", "Ocurrió un error durante el proceso", "error");
+                            }
+                        });
+
+                    } else {
+                        swal.fire("Se ha cancelado el proceso de eliminar!");
+                    }
+                });
+        };
+    </script>
+}

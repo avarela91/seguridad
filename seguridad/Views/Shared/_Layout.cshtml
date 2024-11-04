@@ -1,0 +1,178 @@
+﻿@using seguridad.Filters;
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <title>Seguridad</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Mensajes de Alertas-->
+    <link href="~/Content/sweetalertV2/sweetalert2.min.css" rel="stylesheet" />
+    @Styles.Render("~/Content/datatablecss")
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/bootstrap")
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/cssSideBar")
+    @Styles.Render("~/Content/awesome")
+    <link href="https://fonts.googleapis.com/css?family=Days+One" rel="stylesheet">
+
+</head>
+<body>
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav-up">
+                <li class="nabvar-li">
+
+                </li>
+                <li class="sidebar-brand">
+                    <a href="#" target="_blank">
+                        <img src="~/Content/logointegridad.png" />
+                        </a>
+                </li>
+            </ul>
+            <div class="Content-menu">
+                <ul class="sidebar-nav">
+                    <li class="active"><a href="/Home/Index"><i class="fa fa-home" aria-hidden="true"></i> Principal</a></li>
+                </ul>
+                <ul class="sidebar-nav">
+                    @if (FilterAuth.Authorize_User("009"))
+                    {
+                        <li><a href="/Modulo/Index"><i class="fa fa-window-restore" aria-hidden="true"></i> Módulos</a></li>
+                    }
+                    @if (FilterAuth.Authorize_User("010"))
+                    {
+                        <li><a href="/User/Index"><i class="fa fa-user-circle-o" aria-hidden="true"></i> Usuarios</a></li>
+                    }
+                    @if (FilterAuth.Authorize_User("011"))
+                    {
+                        <li><a href="/Reportes/Index"><i class="fa fa-folder-open" aria-hidden="true"></i> Reportes</a></li>
+                    }
+
+                    </ul>
+                @*<p class="title-nav"><i class="fa fa-cog" aria-hidden="true"></i> Sección 2</p>*@
+            </div>
+
+        </div>
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <nav class="custom-navbar">
+                <div class="custom-navbar-item1">
+                    <ul>
+                        <li>
+                            <a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="custom-navbar-item2">
+                    <h3>Seguridad</h3>
+                    <p id="hora"></p>
+                </div>
+                <div class="custom-navbar-item3">
+                    <p></p>
+                    <ul>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="fa fa-user-circle-o" aria-hidden="true"></i> <span class="caret"></span>  @User.Identity.Name</a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="submit" value="Cerrar sesión" class="form-control LogOff" />
+                                    }
+
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+
+
+                        @RenderSection("featured", required: false)
+                        <section class="content-wrapper main-content clear-fix">
+                            @RenderBody()
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+    </div>
+
+    <!--Scripts para las alertas -->
+    <script src="~/Content/sweetalertV2/sweetalert2.min.js"></script>
+    <!-- /#wrapper -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/datatable")
+    @Scripts.Render("~/bundles/boostrap")
+    <script>
+        //var variable;
+        //var actualizadorFecha;
+        //$("#menu-toggle").click(function (e) {
+        //    e.preventDefault();
+        //    $("#wrapper").toggleClass("toggled");
+        //});
+
+        //$(function () {
+           
+        //    var diff = 0;
+        //    var DetenerInterval = false;
+        //    if ($.cookie("TimeCount") == undefined) {
+        //        $.cookie("TimeCount", 0, { path: '/' });
+        //    }
+
+
+           
+
+
+        //    if ($.cookie("TimeCount") > 0) {
+        //        var cookieValue = $.cookie("TimeCount");
+        //        var date = new Date().getTime();
+        //        diff = ((date - cookieValue) / 1000);
+
+        //        console.log(diff);
+        //        if (diff >= 20) {
+        //            DetenerInterval = true;
+        //            $.cookie("TimeCount", 0, { path: '/' });
+
+        //            $.ajax({
+        //                method: "POST",
+        //                url: "/Account/SessionDesactive"
+        //                , error: function (xhr, status) {
+        //                    alert('Disculpe, existió un problema');
+        //                },
+        //                complete: function (xhr, status) {
+        //                    console.log(status);
+        //                    console.log(xhr);
+        //                    window.location.replace("/Account/Login");
+        //                }
+        //            });
+        //        }
+        //    }
+
+        //    if (DetenerInterval == false) {
+        //        actualizadorFecha = setInterval(function () {
+        //            var date = new Date();
+        //            console.log(date.getTime());
+        //            date.getTime()
+        //            $.cookie("TimeCount", date.getTime(), { path: '/' });
+        //        }, 1);
+        //    }
+
+        //}());
+
+    </script>
+
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

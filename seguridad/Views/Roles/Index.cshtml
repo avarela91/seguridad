@@ -1,0 +1,116 @@
+﻿@model IEnumerable<ET.Rol>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@if (TempData["Message"] != null)
+{
+    <script type="text/javascript">
+                    window.onload = function () {
+                        Swal.fire({
+                          position: 'top-end',
+                          icon: 'success',
+                          title: '@TempData["Message"]',
+                          showConfirmButton: false,
+                          timer: 1500
+                        })
+                    };
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-12 col-lg-10 col-lg-offset-1">
+        <div class="panel">
+            <div class="panel-heading">
+                <hgroup class="title title-list">
+                    <h2>Roles</h2>
+                    @Html.ActionLink("Nuevo", "Create", new { Controller = "Roles", id = ViewData["id"] }, new { @class = "btn btn-info" })
+                    
+                </hgroup>
+                <a href="/Modulo/Index" class="back"><i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> Atras</a>
+            </div>
+            <div class="panel-body">
+
+                <table id="myTable" class="table table-responsive">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.First().RoleName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.First().AccesoTotal)
+                        </th>
+                        <th></th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.RoleName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AccesoTotal)
+                            </td>
+                            <td>
+                                @Html.ActionLink("Editar", "Edit", new { id = item.RoleId }) |
+                                <a onclick="showAlert(@item.RoleId)">Eliminar | </a>
+                                @Html.ActionLink("Agregar Permisos", "Create", new { Controller = "RolesPermiso", id = item.RoleId })
+                            </td>
+                        </tr>
+                    }
+                    @Html.ValidationMessage("error")
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                "language": {
+                    "url": "/Scripts/DataTables/lang/spanish.txt"
+                }
+            });
+        });
+
+        function showAlert(id) {
+            swal.fire({
+                title: "Seguro que quiere eliminar el registro?",
+                text: "Una vez aceptado este mensaje, no se puede revertir la operación!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, Eliminarlo!',
+                cancelButtonText: 'Cancelar'
+            })
+                .then((result) => {
+                    if (result.value) {
+
+                        $.ajax({
+                            type: "POST",
+                            data: { 'id': id },
+                            url: '@Url.Action("Delete","Rol")',
+                            success: function (data) {
+                                swal.fire("Eliminado!", "El registro ha sido eliminado correctamente", "success")
+                                .then((Ok) => {
+                                     window.location= '@Url.Action("Index","Rol")';
+                                    })
+                            },
+                            error: function (data) {
+                                swal.fire("ERROR!", "Ocurrió un error durante el proceso", "error");
+                            }
+                        });
+
+                    } else {
+                        swal.fire("Se ha cancelado el proceso de eliminar!");
+                    }
+                });
+        };
+    </script>
+}

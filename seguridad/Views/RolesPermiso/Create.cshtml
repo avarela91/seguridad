@@ -1,0 +1,153 @@
+﻿@model ET.Rol
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (ViewData["Message"] != null)
+{
+    <script type="text/javascript">
+                    window.onload = function () {
+                        Swal.fire({
+                          position: 'top-end',
+                          icon: 'success',
+                          title: '@ViewData["Message"]',
+                          showConfirmButton: false,
+                          timer: 1500
+                        })
+                    };
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-12 col-lg-10 col-lg-offset-1">
+        <div class="panel">
+            <div class="panel-heading">
+                <hgroup class="title title-list">
+                    <h2>Agrega permisos a Rol: @Model.RoleName</h2>
+                    
+                </hgroup>
+                <a href="/Modulo/Index" class="back"><i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> Atras</a>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(model => model.RoleId)
+                    @Html.HiddenFor(model => model.Modulo_Id)
+                    <div class="row">
+                        <div class="col-md-5">
+                            <h4>Permisos disponibles</h4>
+                            @Html.ListBox("PermisosDisponibles", ViewData["ListPermisos"] as MultiSelectList, new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-2">
+                            <h4>Acciones</h4>
+                            <button type="button" title="Pasar 1 a la derecha" class="form-control add">></button>
+                            <button type="button" title="Pasar todos a la derecha" class="form-control addAll">>></button>
+                            <button type="button" title="Pasar 1 a la izquierda" class="form-control remove"><</button>
+                            <button title="Pasar todos a la izquierda" class="form-control removeAll"><<</button>
+                        </div>
+                        <div class="col-md-5">
+                            <h4>Permisos Seleccionados</h4>
+                            @Html.ListBox("PermisosSeleccionadosList", ViewData["ListpermisosSeleccionados"] as MultiSelectList, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        @Html.ValidationMessage("error")
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-3 col-md-offset-6">
+                                <br />
+                                @Html.ActionLink("Cancelar", "Index", new { Controller = "Roles", id = Model.Modulo_Id }, new { @class = "form-control btn-info", @style = "text-align:center" })
+                            </div>
+                            <div class="col-md-3">
+                                <br />
+                                <input type="submit" value="Guardar" class="form-control btn-success" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="imputHidden">
+                        @foreach (ET.Permiso permiso in (ViewData["permisosSeleccionados"] as List<ET.Permiso>))
+                        {
+                            <input style="display:none" class="form-control" id="permisosSeleccionados_@permiso.Permiso_Id" name="permisosSeleccionados" value="@permiso.Permiso_Id" />
+                        }
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                "language": {
+                    "url": "/Scripts/DataTables/lang/spanish.txt"
+                }
+            });
+
+            $(document).on('click', ".eliminar", function () {
+                if (!confirm('¿Esta seguro que desea borrar este dato?')) {
+                    return false;
+                }
+            });
+
+            $(".add").on("click", function (e) {
+                e.preventDefault();
+                $('#PermisosDisponibles :selected').each(function (i, sel) {
+
+                    $('#PermisosSeleccionadosList').append($('<option>', {
+                        value: $(sel).val(),
+                        text: $(sel).text()
+                    }));
+                    $(".imputHidden").append('<input style="display:none" class="form-control" id="permisosSeleccionados_' + $(sel).val() + '" name="permisosSeleccionados" value="' + $(sel).val() + '" />');
+                });
+                $('#PermisosDisponibles :selected').remove();
+            });
+
+            $(".addAll").on("click", function (e) {
+                e.preventDefault();
+                $('#PermisosDisponibles option').each(function (i, sel) {
+
+                    $('#PermisosSeleccionadosList').append($('<option>', {
+                        value: $(sel).val(),
+                        text: $(sel).text()
+                    }));
+                    $(".imputHidden").append('<input style="display:none" class="form-control" id="permisosSeleccionados_' + $(sel).val() + '" name="permisosSeleccionados" value="' + $(sel).val() + '" />');
+                });
+                $('#PermisosDisponibles option').remove();
+            });
+
+            $(".remove").on("click", function (e) {
+                e.preventDefault();
+                $('#PermisosSeleccionadosList :selected').each(function (i, sel) {
+                    console.log($(sel));
+                    $('#PermisosDisponibles').append($('<option>', {
+                        value: $(sel).val(),
+                        text: $(sel).text()
+                    }));
+                    $(".imputHidden "+"#permisosSeleccionados_" + $(sel).val()).remove();
+                });
+                $('#PermisosSeleccionadosList :selected').remove();
+            });
+
+            $(".removeAll").on("click", function (e) {
+                e.preventDefault();
+                $('#PermisosSeleccionadosList option').each(function (i, sel) {
+                    console.log($(sel));
+                    $('#PermisosDisponibles').append($('<option>', {
+                        value: $(sel).val(),
+                        text: $(sel).text()
+                    }));
+                    $(".imputHidden " + "#permisosSeleccionados_" + $(sel).val()).remove();
+                });
+                $('#PermisosSeleccionadosList option').remove();
+            });
+        });
+    </script>
+}

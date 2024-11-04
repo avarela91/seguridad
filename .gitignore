@@ -1,0 +1,74 @@
+# Archivos de build
+bin/
+obj/
+
+# Archivos de configuración de usuario y sistema
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.csproj.user
+*.csproj.FileListAbsolute.txt
+
+# Archivos de configuración de IDE
+.vscode/
+.idea/
+
+# Directorios de dependencias
+*.nuget/
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Configuración de build y dependencias de herramientas
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+
+# Archivos temporales
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Archivos generados por herramientas de compilación
+*.suo
+*.user
+*.userosscache
+*.suo
+*.cache
+*.config
+*.proj.user
+*.dll
+*.exe
+*.pdb
+
+# Archivos de la base de datos local
+*.mdf
+*.ldf
+
+# Configuración de paquetes de NuGet
+*.nupkg
+*.snupkg
+
+# Configuración de npm
+node_modules/
+
+# Configuración de Docker
+docker-compose.override.yml
+
+# Configuración de entorno local
+.env
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de JetBrains Rider
+.idea/
+*.sln.iml
+
+.vs/
